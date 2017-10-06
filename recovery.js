@@ -37,10 +37,7 @@ var getHostOptime = function(host) {
 }
 
 var allCaughtUp = function(cu) {
-    for (var i=0;i<cu.length;i++) {
-        if (!cu[i] ) return false;
-    }
-    return true;
+    return cu.every( c => c );
 }
 print("Waiting for dc-1 nodes to get caught up");
 var caughtUp = [];
