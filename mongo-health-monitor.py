@@ -18,6 +18,7 @@ import pymongo, json
 import smtplib
 from email.mime.text import MIMEText
 import socket
+import subprocess
 
 class App():
 
@@ -28,6 +29,10 @@ class App():
         self.action_map = { "email" : "action__email", "runScript" : "action__run_script" }
         self.logger.debug("self.args.action=%s" % self.args.action)
         self.action_args = json.loads(self.args.action)
+        action = self.action_args['action']
+        self.logger.debug("Found action='%s'" % action)
+        if not action in self.action_map.keys():
+            raise Exception("Unknown action '%s', cannot process" % action)
         self.logger.debug("action_args: %s" % str(self.action_args))
 
         # validate mongodb connection string
@@ -41,8 +46,20 @@ class App():
     # --- action's implemented here ---
     # actions should throw exceptions which bubble up
     # and end program
+    # { 'action' : 'runScript', script : <script>, args : [ <array of addition args> ] }
     def action__run_script(self,ts):
         self.logger.info("__run_script ts=%s"%ts)
+        script = self.action_args['script']
+        args = self.action_args['args']
+        if len(args)>0:
+            s = args.insert(0,script)
+            self.logger.debug("Calling %s with args %s" % (script,','.join(args)))
+            ret = subprocess.check_call(s,shell=True)
+        else:
+            s = script
+            self.logger.debug("Calling %s" % script)
+            ret = subprocess.call(s,shell=True)
+        self.logger.debug("ret = %s " % ret)
 
 
     def action__email(self,ts):
@@ -54,6 +71,7 @@ class App():
         msg['From'] = sender
         msg['To'] = ",".join(to)
         s = smtplib.SMTP('localhost')
+        self.logger.debug('sending "%s" to %s' % (msg.as_string(),to) )
         s.sendmail(sender, to, msg.as_string())
         s.quit()
 

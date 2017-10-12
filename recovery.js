@@ -1,15 +1,15 @@
 /*
- * failover.js
+ * recovery.js
  *
  * Example script - DO NOT USE IN PRODUCTION
  *
  * Reconfigure replica set to
- * 1) Add arbiter
- * 2) Set priority=0 & votes=0 on dc-1 nodes
+ * 1) Allow dc-1 nodes to catch up
+ * 2) Set priority=1 & votes=1 on dc-1 nodes
+ * 3) Remove arbiter (by not adding it to new config)
  *
  */
 
-var portDC2Arbiter = 28010;
 var dc1Ports = [ 28000,28001,28002 ];
 var dc2Ports = [ 28003,28004 ];
 

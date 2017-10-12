@@ -1,12 +1,11 @@
 /*
- * recover.js
+ * failover.js
  *
  * Example script - DO NOT USE IN PRODUCTION
  *
  * Reconfigure replica set to
- * 1) Allow dc-1 nodes to catch up
- * 2) Set priority=1 & votes=1 on dc-1 nodes
- * 3) Remove arbiter
+ * 1) Add arbiter
+ * 2) Set priority=0 & votes=0 on dc-1 nodes
  *
  */
 
