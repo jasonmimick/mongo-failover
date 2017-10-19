@@ -5,7 +5,11 @@
 #
 # jason.mimick@mongodb.com
 #
-# nohup ./mongo-health-monitor.py --mongodb  --action email --logfile ./mon.log
+#python mongo-health.monitor.py --logpath /var/log/mongo-monitor.log \
+#--mongodb mongodb://server1:27000,server2:27000,server3:27000/?replicaSet=prod \
+#--action '{"action":"runScript", "script" : "/opt/failover.js" }'
+#
+# Supported actions - email,runScript
 #
 __version__ = "0.0.1"
 
