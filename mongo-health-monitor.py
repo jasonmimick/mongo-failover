@@ -100,17 +100,18 @@ class App():
                                          connectTimeoutMS=(self.args.pollSeconds*1000) )
             self.logger.debug("created mongo")
             rs_status = mongo.admin.command("replSetGetStatus",
-                                            readPreference=pymongo.read_preferences.Secondary())
+                                            read_preference=pymongo.read_preferences.Secondary())
             self.logger.debug("ran replSetGetStatus")
-            if rs_status['myState']==1:
-                p = [m for m in rs_status['members'] if m['stateStr']=='PRIMARY']
-                if not len(p)==1:
-                    self.logger.info("NOT HEALTHY status.myState was 1 but no PRIMARY found")
-                    return False
-            else:
-                self.logger.info("NOT HEALTHY Replica Set status.myState was not 1")
+            self.logger.debug("%s" % rs_status)
+            #if rs_status['myState']==2:
+            p = [m for m in rs_status['members'] if m['stateStr']=='PRIMARY']
+            self.logger.debug("%s" % p)
+            if not len(p)==1:
+                self.logger.info("NOT HEALTHY no PRIMARY found")
                 return False
-            return True
+            else:
+                self.logger.info("HEALTHY Replica Set PRIMARY=%s" % p[0])
+                return True
         except Exception as exp:
             self.logger.error(exp)
             return False
